@@ -14,17 +14,48 @@ import { Component } from '@angular/core';
         'background-color': 'blue',
         'transform': 'translateX(100px)'
       })),
-      transition('normal => highlighted', animate(1000)),
-      transition('highlighted => normal', animate(2000))
+      transition('normal <=> highlighted', animate(500))
+      // transition('highlighted => normal', animate(1000))
+    ]),
+    trigger('wildState', [
+      state('normal', style({
+        'background-color': 'red',
+        'transform': 'translateX(0) scale(1)'
+      })),
+      state('highlighted', style({
+        'background-color': 'blue',
+        'transform': 'translateX(100px) scale(1)'
+      })),
+      state('shrunken', style({
+        'background-color': 'green',
+        'transform': 'translateX(0) scale(0.5)'
+      })),
+      transition('normal <=> highlighted', animate(400)),
+      transition('highlighted => normal', animate(800)),
+      transition('shrunken <=> *', [
+        style({
+          'background-color': 'orange'
+        }),
+        animate(100, style({
+          'border-radius': '50px'
+        })),
+        animate(500)
+      ])
     ])
   ]
 })
 export class AppComponent {
   state = 'normal';
+  wildState = 'normal';
   list = ['Milk', 'Sugar', 'Bread'];
 
   onAnimate() {
     this.state == 'normal' ? this.state = 'highlighted' : this.state = 'normal';
+    this.wildState == 'normal' ? this.wildState = 'highlighted' : this.wildState = 'normal';
+  }
+
+  onShrink() {
+    this.wildState = 'shrunken';
   }
 
   onAdd(item) {
